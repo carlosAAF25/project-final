@@ -1,34 +1,71 @@
-namespace WebApi
-{
-    public class Program
-    {
-        public static void Main(string[] args)
-        {
-            var builder = WebApplication.CreateBuilder(args);
+//using Application.UseCases.CreateReservation;
+//using Domain.Interfaces;
+//using Infrastructure.Data;
+//using Infrastructure.Repositories;
+//using Microsoft.EntityFrameworkCore;
 
-            // Add services to the container.
-            builder.Services.AddRazorPages();
+//namespace WebApi
+//{
+//    public class Program
+//    {
+//        public static void Main(string[] args)
+//        {
+//            var builder = WebApplication.CreateBuilder(args);
 
-            var app = builder.Build();
+//            // Add services to the container.
+//            builder.Services.AddRazorPages();
 
-            // Configure the HTTP request pipeline.
-            if (!app.Environment.IsDevelopment())
-            {
-                app.UseExceptionHandler("/Error");
-                // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
-                app.UseHsts();
-            }
+//            var app = builder.Build();
 
-            app.UseHttpsRedirection();
-            app.UseStaticFiles();
+//            // Configure the HTTP request pipeline.
+//            if (!app.Environment.IsDevelopment())
+//            {
+//                app.UseExceptionHandler("/Error");
+//                // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
+//                app.UseHsts();
+//            }
 
-            app.UseRouting();
+//            app.UseHttpsRedirection();
+//            app.UseStaticFiles();
 
-            app.UseAuthorization();
+//            app.UseRouting();
 
-            app.MapRazorPages();
+//            app.UseAuthorization();
 
-            app.Run();
-        }
-    }
-}
+//            app.MapRazorPages();
+
+//            app.Run();
+//        }
+//    }
+//}
+
+
+
+using Application.UseCases.CreateReservation;
+using Domain.Interfaces;
+using Infrastructure.Data;
+using Infrastructure.Repositories;
+using Microsoft.EntityFrameworkCore;
+
+var builder = WebApplication.CreateBuilder(args);
+
+// PostgreSQL
+builder.Services.AddDbContext<AppDbContext>(
+    options => options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"))
+);
+
+// Inyecciones
+builder.Services.AddScoped<IReservationRepository, ReservationRepository>();
+builder.Services.AddScoped<CreateReservationHandler>();
+
+builder.Services.AddControllers();
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
+
+var app = builder.Build();
+
+app.UseSwagger();
+app.UseSwaggerUI();
+app.UseAuthorization();
+app.MapControllers();
+app.Run();
