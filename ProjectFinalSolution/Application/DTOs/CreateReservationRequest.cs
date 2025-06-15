@@ -1,8 +1,7 @@
-﻿namespace Domain.Entities;
+﻿namespace Application.DTOs;
 
-public class Reservation
+public class CreateReservationRequest
 {
-    public Guid Id { get; set; }
     public Guid SpaceId { get; set; }
     public Guid UserId { get; set; }
     public DateTime StartDate { get; set; }
